@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { register } from '../services/api'; // <-- importa o serviço
 
 export default function Home() {
   const [email, setEmail] = useState('');
@@ -11,23 +12,17 @@ export default function Home() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      await register(email, password);
+      setMessage('Usuário registrado com sucesso!');
+  } catch (error: unknown) {
+    console.error(error);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage('Usuário registrado com sucesso!');
-      } else {
-        setMessage(`Erro: ${data.message}`);
-      }
-    } catch (error) {
-      console.error(error);
-      setMessage('Erro de conexão com o servidor.');
+    if (error instanceof Error) {
+      setMessage(error.message || 'Erro ao registrar.');
+    } else {
+      setMessage('Erro ao registrar.');
     }
+  }
   }
 
   return (

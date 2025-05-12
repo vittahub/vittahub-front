@@ -1,5 +1,5 @@
 'use client';
-
+import { login } from '../../services/api';
 import { useState } from 'react';
 
 export default function Home() {
@@ -11,26 +11,21 @@ async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
     try {
-    const response = await fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-    });
+    // Chama a função de login
+    const data = await login(email, password);
 
-    const data = await response.json();
-
-    if (response.ok) {
-        // Armazenar o token no localStorage
-        localStorage.setItem('authToken', data.token);
-        setMessage('Login bem-sucedido!');
+    // Armazenar o token no localStorage
+    localStorage.setItem('authToken', data.token);
+    setMessage('Login bem-sucedido!');
+    } catch (error: unknown) {
+    if (error instanceof Error) {
+        setMessage(`Erro: ${error.message}`);
     } else {
-        setMessage(`Erro: ${data.message}`);
+        setMessage('Erro desconhecido.');
     }
-    } catch (error) {
-    console.error(error);
-    setMessage('Erro de conexão com o servidor.');
     }
 }
+
 
 return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
