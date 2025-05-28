@@ -1,15 +1,19 @@
-export async function register(email: string, password: string) {
+import { PatientRegisterRequest } from "@/contracts/requests/AuthRequest";
+import { PatientRegisterResponse } from "@/contracts/responses/AuthResponse";
+
+
+export async function patientRegister(req: PatientRegisterRequest) {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(req),
     });
 
-    const data = await response.json();
+    const data: PatientRegisterResponse = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Erro no registro.');
+    if ('error' in data) {
+      throw new Error(data.error || 'Erro no registro.');
     }
 
     return data;
