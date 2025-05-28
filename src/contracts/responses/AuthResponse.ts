@@ -20,11 +20,6 @@ export interface UserResponse {
     email: string
 };
 
-export const toUserResponse = (user: any): UserResponse => ({
-    id: user.id,
-    email:user.email
-});
-
 export interface LoginSuccessResponse {
     user: UserResponse;
     token: string;
